@@ -1,0 +1,106 @@
+---
+title: "PEC1"
+author: "UOC"
+date: "Otoño 2024"
+output: 
+  html_document:
+    highlight: default
+    number_sections: yes
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+---
+
+
+******
+# Objetivos del aprendizaje
+******
+
+El objetivo de esta actividad es introducir al estudiante en el análisis descriptivo de los datos con `R`.
+
+En esta PEC seguiremos utilizando el conjunto de datos 'worlcup' sobre la copa mundial de fútbol
+celebrada en Sudáfrica el año 2010.
+
+Recordemos que es una tabla de datos donde las filas representan jugadores y las columnas características de dichos jugadores.
+
+Las variables o características de los jugadores que nos interesan son las siguientes: 
+
+1) `Team`: equipo al que pertenece el jugador.
+2) `Position`: posición en la que juega el jugador: `Defender` (defensa), `Forward` (delantero), `Goalkeeper` (portero) o `Midfielder` (centrocampista).
+3) `Time`: tiempo que ha jugado el jugador en minutos.
+4) `Shots`: número de tiros a puerta realizados por el jugador.
+5) `Passes`: número de pases realizados por el jugador.
+6) `Tackles`: número de entradas realizadas por el jugador.
+7) `Saves`: número de paradas realizadas por el jugador.
+
+Importante:
+
+1. Esta PEC debe realizarse de forma estrictamente individual, quedando del todo prohibido el uso de herramientas de IA. Cualquier indicio de copia será penalizado con un suspenso (D) por todas las partes implicadas y la posible evaluación negativa de la asignatura de forma íntegra.
+1. Es necesario que el estudiante indique todas las fuentes que ha utitlizado para la realización de la PEC. De no ser así, se considerará que el estudiante ha cometido plagio, siendo penalizado con un suspenso (D) y la posible evaluación negativa de la asignatura de manera íntegra.
+
+******
+# Preparar el conjunto de datos (0.5 puntos)
+******
+
+* Para realizar esta PEC, puedes partir de los objetos `worldcup` y `worldcup.Spain` generados como resultado de la PEC0.
+* Si no realizaste la PEC0, bájate la solución y copia todos los pasos realizados.
+
+
+## Solución {-}
+
+
+
+En toda la PEC vamos a usar la tabla de datos `worldcup.Spain`.
+
+******
+# Ordenar valores (1.5 puntos)
+******
+
+
+* ¿Cuáles son los 10 jugadores españoles que han jugado más tiempo? 
+* ¿Cuáles son los 10 jugadores españoles que han jugado menos tiempo?
+
+
+## Solución {-}
+
+
+
+******
+# Estadísticas descriptivas (3 puntos)
+******
+
+* Calcular la media y desviación estándar del tiempo de juego de los jugadores españoles dependiendo de la posición en que juegan, es decir, para cada posición en la juega un jugador hay que calcular la media y la desviación estándar de todos los tiempos de juego.
+* Dibujar un boxplot de los tiempos de juego para cada posición del jugador.
+* Comentar los resultados obtenidos.
+
+
+
+## Solución {-}
+
+
+
+****
+# Eliminación de outliers (2.5)
+****
+
+
+* Eliminar los outliers de la variable `Tiros`. Construir la tabla de datos `worldcup.Spain.sin.outliers`.
+* Comparar los boxplots de la variable `Tiros`  de la tabla de datos original (`worldcup.Spain`), es decir, con los datos originales sin eliminar los outliers y la nueva subtabla de datos `worldcup.Spain.sin.outliers`.
+* Interpretar los resultados
+
+
+## Solución {-}
+
+
+****
+# Agrupaciones de valores (2.5)
+****
+
+* Obtener un resumen de valores (mínimo, cuartiles, media y máximo) de la variable `Pases` en función de los valores de la variable `Posición`. Indicación: podéis usar la función `by` de `R`.
+* Obtener un boxplot de la variable `Pases` en función de los valores de la variable `Posición`.
+* Interpretar los resultados
+
+
+## Solución {-}
+
+
