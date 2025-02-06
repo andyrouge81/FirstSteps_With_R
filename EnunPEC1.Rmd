@@ -9,6 +9,9 @@ output:
     theme: cosmo
     toc: yes
     toc_depth: 2
+# se han añadido estos dos valores para la bibliografía(tipo,archivo.bib)
+csl: vancouver.csl 
+bibliography: biblio.bib
 ---
 
 
@@ -48,6 +51,23 @@ Importante:
 
 ## Solución {-}
 
+```{r, eval = TRUE, echo = TRUE}
+
+# cargamos el paquete "faraway" para acceder al dataframe "worldcup"
+library(faraway)
+head(worldcup) 
+
+# hacemos una copia para no modificar el original,lo llamaremos "dfgol" por cambiar un poco. 
+dfgol = worldcup
+
+# vamos a seleccionar los jugadores de España en un nuevo dataframe "worldcup.Spain", como dice el enunciado.
+worldcup.Spain = dfgol[dfgol$Team == "Spain",]
+
+# vemos los primeros valores de la nueva tabla generada.
+head(worldcup.Spain)
+
+
+```
 
 
 En toda la PEC vamos a usar la tabla de datos `worldcup.Spain`.
@@ -62,8 +82,29 @@ En toda la PEC vamos a usar la tabla de datos `worldcup.Spain`.
 
 
 ## Solución {-}
+```{r, eval= TRUE, echo= TRUE}
+# En la variable "mas.Time" vamos a guardar el resultado que se pasará a explicar más abajo.
 
+mas.Time = head(worldcup.Spain[order(worldcup.Spain$Time, decreasing= TRUE), ], 10)
+mas.Time
 
+# lo hemos puesto todo en una misma línea que pasamos a explicar de dentro hacia fuera;
+# "worldcup.Spain$Time", seleccionamos del dataframe worldcup.Spain la variable "Time"
+# lo ordenamos con "order" y el argumeto "decreasing" para elegir si es creciente o decreciente, en este caso "TRUE" lo hace decreciente.
+# todo esto lo colocamos dentro del dataframe "worldcup.Spain" en corchetes para seccionar una subtabla. Importante la "," para que generar la subtabla y lo listamos con un "head" y un "10" para que salgan los 10 primeros resultados.
+
+# hagamos los mismo con los 10 jugadores con menos tiempo pero esta vez utilizando "decrerasing = FALSE" para un resultado creciente en la subtabla.
+
+menos.Time = head(worldcup.Spain[order(worldcup.Spain$Time, decreasing = FALSE), ], 10)
+menos.Time
+
+```
+
+## Comentario
+
+A modo de comentario podemos destacar de la subtabla de los 10 jugadores que ha jugado más tiempo, que tenemos un triple empate, pues con 540 min jugados están, los defensores Capdevila y Piqué y Casillas como el único portero.
+
+De los jugadores que menos tiempo han jugado, destacamos a Marchena como defensor que ha jugado tan solo 8 minutos, seguido por Albeola con 13 minutos jugados.
 
 ******
 # Estadísticas descriptivas (3 puntos)
@@ -76,6 +117,38 @@ En toda la PEC vamos a usar la tabla de datos `worldcup.Spain`.
 
 
 ## Solución {-}
+```{r, eval = TRUE, echo = TRUE}
+
+# lo primero tenemos que conocer el nombre de las funciones de la media y la desviación estandar, "mean()" y "sd()", respectivamente.
+# con "by" lo que vamos a hacer es listar por factores y como nos pide el enunciado vamos a listar por la variable factor "Position"
+media.Position = by(worldcup.Spain$Time, worldcup.Spain$Position, mean)
+media.Position
+# a la orden "by" se le pasan 3 argumentos, primero la variable cuantitativa, en este caso "Time" , segundo una variable cualitativa, y lo tercero la función, en este caso "mean()" de la media.
+
+# para el caso de la desviación estandar, hacemos lo mismo, pero cambiando la función por "sd".
+
+desvi.Position = by(worldcup.Spain$Time, worldcup.Spain$Position, sd)
+desvi.Position
+
+# ahora vamos a graficar un boxplot con los tiempos de juego de cada posición del jugador
+
+boxplot(Time~Position, worldcup.Spain, main="Tiempos de juego por cada posición", 
+        xlab= "Posición", ylab= "Tiempo(min)", names=c("Defensa","Delantero","Portero","Mediocampo"), col= c("red","blue","lightblue","green"))
+
+# pasemos a explicar el proceso de creación, para que relacione una variable numerica y una variable categorica en un boxplot necesitamos "~" uniendo las dos variables, sería el primer argumento para el boxplot.
+# como segundo argumento le pasamos el dataframe, en este caso "worldcup.Spain"
+# ahora vamos a adornar un poco el boxplot,con varios argumentos. Un título "main",
+# leyenda en el eje x e y "xlab" "ylab" , le cambiamos el nombre de las posisciones al    castellano "names" y le ponemos un poco de color al boxplot "col".
+
+```
+## Comentario
+
+Para empezar lo primero que nos llama la atención en el boxplot es la categoría de "**Portero"**, solo está Casillas y tiene 540 min jugados, por lo que, al haber sólo un portero los _stats_ (_min, Q1, Mediana, Q3 y max_) van a ser para todas las medidas 540.
+
+Lo siguiente en llamarnos la atención son las categorías de "**Defensa**" y "**Mediocampo**", pocos defensas han jugado minutos siendo el **minimo 8**.De los 6 defensas, 4 han jugado más de 500 minutos(_max 540_), por lo que la mediana(_530.5_) se encuentra más cerca de 540 como podemos observar en el gráfico. Lo contrario pasa con los jugadores de mediocampo pues de los 10 jugadores con esta categoría solo 3 superan los 500 minutos jugados y eso hace tener una mediana baja(_117_) y tener un rango de Q2 hasta Q3(_506_) tan amplio.
+
+La categoría que parece más pareja o equidistante es la de **Delantero**, con un min de 39 minutos y un max de 529 minutos jugados, siendo la mediana 278 minutos, tiene un rango intercuartílico **IQR** (_Q3-Q1_)[@CienciasMatematicasInformatica2021UIB2021] de **249 minutos**, es decir, el 50% de los minutos jugados por los delanteros.
+
 
 
 
@@ -90,7 +163,37 @@ En toda la PEC vamos a usar la tabla de datos `worldcup.Spain`.
 
 
 ## Solución {-}
+```{r, echo =TRUE, eval=TRUE}
 
+# para eliminar los outliers de la variable "tiros" debemos localizarlo y para ello
+# obtenemos el valor del outlier con "$out" al final del parentesis 
+outliers <- boxplot(worldcup.Spain$Shots)$out
+print(paste("El valor del outlier es: ", outliers))
+
+# vamos a seleccionar el índice del outlier contenido en la variable "outliers" que hemos creado pues para generar una subtabla sin él debemos conocer su índice. Gracias a "which" podemos conocer el indice del valor contenido en "outliers" 
+sin.outlier = which(worldcup.Spain$Shots %in% outliers)
+print(paste("El índice de nuestro outlier en la variable 'sin.outlier' es:" , sin.outlier))
+
+# generamos una tabla sin el valor outlier en la variable tiros
+worldcup.Spain.sin.outliers <- worldcup.Spain[-sin.outlier, ]# la "," simpre importante
+# comprobamos que hemos eliminado el outlier de la subtabla
+View(worldcup.Spain.sin.outliers)
+
+# ahora vamos a graficar el boxplot con outlier y sin el outlier
+boxplot(worldcup.Spain$Shots, main = "Tiros realizados por jugador \ncon OUTLIER", xlab= "Tiros a puerta", horizontal = TRUE)
+
+boxplot(worldcup.Spain.sin.outliers$Shots, main="Tiros realizados por jugador \nsin OUTLIER", xlab= "Tiros a puerta", horizontal = TRUE)
+
+```
+
+## Comentario
+
+Podemos comprobar en la tabla "**worldcup.Spain**" que el valor 22 del outlier en el índice 19 pertenece a **Villa** delantero que ha jugado bastantes minutos con algunos pases y pocas entradas.
+
+Comparando los dos bloxplots o diagramas de cajas[@CienciasMatematicasInformatica2021UIB2021] generados, uno con outliers y el otro sin outliers, lo primero que llama la atención es el bloxplot con outliers donde el eje de las "y" es más amplio, siendo el valor max 22, también han cambiado los valores Q1, Q2 y Q3 con respecto al gráfico sin outliers, solo coinciden en el mínimo, 0 tiros a puerta que pertenecen a Casillas.
+
+Se podría tambíen comentar también en el gráfico sin outliers, que la cola es más larga hacia la derecha(_el bigote Q3 hasta el max es mas largo que del bigote Q1 al min_).
+El gráfico sin outliers no muestra simetria con respecto a la mediana(_3.158_), que hay mas datos apretados del Q1 al Q2 y más dispersión del Q2 al Q3. El **IQR** es 4 que es el 50% de los tiros a puerta.
 
 ****
 # Agrupaciones de valores (2.5)
@@ -103,4 +206,39 @@ En toda la PEC vamos a usar la tabla de datos `worldcup.Spain`.
 
 ## Solución {-}
 
+```{r, eval= TRUE, echo= TRUE}
 
+# para poder sacar los cuartiles y la mediana necesitamos la función "summary", pero como a "summary" solo puede pasar un dataframe como argumentio, necesitamos la función "by" a la que sí se le pueden pasar dos variables y una función a calcular.
+
+by(worldcup.Spain$Passes, worldcup.Spain$Position, summary)
+
+# vamos a graficar un boxplot en horizontal, con los nombres de las posiciones en castellano de la variable "passes" en función de la posición de los jugadores.
+
+boxplot(Passes~Position, worldcup.Spain, main = "Pases de los jugadores \nsegún su posición", col= c("lightblue","pink","blue", "lightgreen"), names = c("Defensa","Delantero","Portero","Mediocampo"), xlab = "Número de pases", ylab = "Posición de los Jugadores", horizontal= TRUE)
+
+# hemos añadido color, título principal, nombre a los ejes, etc. Siempre se pueden añadir más detalles al gráfico en función de los que se quiera mostrar o representar.
+
+```
+## Comentarios
+
+Si observamos el boxplot podemos ver que la posición de **portero** tiene **67** pases en total, por lo que su mediana y cuartiles vana a ser todos iguales, el portero es, **Casillas**.
+
+La posición de **delantero** tampoco posee muchos pases en relación a las posiciones de defensas y mediocentro. Los delanteros tienen una mayor dispersión desde la mediana(_50_) al tercer cuartil(_109.5_) viendose así el boxplot asimétrico con respecto a la mediana y con una cola hacia la derecha con un max de 169 pases realizados por **Villa**.
+
+Pero donde podemos ver mas asimetria desde Q1 hacia la mediana y de la mediana hasta Q3 es la posición de **mediocampo**. Con una mayor compresión de los datos entre Q1(_46.75_) y la mediana(_98_) y siendo notable la dispersión de datos entre la mediana y Q3(_423.50_) con una cola hacia la derecha siendo el máximo 563 pases por parte del mediocentro **Xavi**.
+
+El **IQR** de 376,75 representa el 50% de los pases realizados por los jugadores en posición de mediocampo.
+
+Para terminar de comentar todas las cajas, tenemos la posicón de **defensa**, en la que ocurre lo contrario que con los mediocampo. En esta posición la dispersión de los datos es mayor entre el primer cuartil, Q1(_72,5_), y la mediana(_276.5_), esto es debido a que, de los 6 defensas del equipo, 4 tienen mas de **250** pases, lo que hace dibujar la caja tan estrecha o concentrada desde la mediana al tercer cuartil, Q3(_307.2_).
+
+Para concluir podemos observar que la mayoría de los pases realizados por el equipo de España lo tienen las posiciones de defensa y mediocentro. Esto tiene mucho sentido en el ambito deportivo ya que son las posiciones que más mueven el balón para distribuir juego y porque el número de delanteros y porteros en relación con las otras posiciones en este deporte.
+
+
+
+
+# Referencias Bibliográficas
+
+
+
+:::{#refs}
+:::
